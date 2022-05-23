@@ -6,6 +6,8 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/Base64.sol";
 
+// Version 1 deployed to Mumbai at: 0x77C45ADB236098efB0D4D318F518B2C86E827938
+
 contract ChainBattles is ERC721URIStorage {
   using Strings for uint256;
   using Counters for Counters.Counter;
@@ -19,7 +21,7 @@ contract ChainBattles is ERC721URIStorage {
   }
 
   // Generates the NFT character SVG image
-  function generateCharacter(uint256 tokenId) public returns (string memory) {
+  function generateCharacter(uint256 tokenId) public view returns (string memory) {
     bytes memory svg = abi.encodePacked(
       '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350">',
       '<style>.base { fill: white; font-family: serif; font-size: 14px; }</style>',
@@ -33,8 +35,8 @@ contract ChainBattles is ERC721URIStorage {
       abi.encodePacked(
         "data:image/svg+xml;base64,",
         Base64.encode(svg)
-      );
-    )
+      )
+    );
   }
 
   // Gets the level of the NFT character
@@ -43,8 +45,8 @@ contract ChainBattles is ERC721URIStorage {
     return levels.toString();
   }
 
-  // Generates the NFT character URI metadata 
-  function getTokenURI(uint256 tokenId) public returns (string memory){
+  // Generates the NFT character URI from the JSON metadata
+  function getTokenURI(uint256 tokenId) public view returns (string memory){
     bytes memory dataURI = abi.encodePacked(
       '{',
         '"name": "Chain Battles #', tokenId.toString(), '",',

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 
 // Version 1 deployed to Mumbai at: 0x77C45ADB236098efB0D4D318F518B2C86E827938
+// Version 2 deployed to Mumbai at: 0x5340d0d6C55B6b3EeFbdB806ca427AEd2743fB82
 
 pragma solidity ^0.8.0;
 
@@ -66,7 +67,7 @@ contract ChainBattles is ERC721URIStorage {
         '<text x="50%" y="50%" class="base" dominant-baseline="middle" text-anchor="middle">', "Attack: ",attack.toString(),'</text>',
         '<text x="50%" y="60%" class="base" dominant-baseline="middle" text-anchor="middle">', "Defense: ",defense.toString(),'</text>',
         '<text x="50%" y="70%" class="base" dominant-baseline="middle" text-anchor="middle">', "Speed: ",speed.toString(),'</text>',
-        '<text x="50%" y="80%" class="base" dominant-baseline="middle" text-anchor="middle">', "Rarity: ",rarity.toString(),'</text>',
+        '<text x="50%" y="80%" class="base" dominant-baseline="middle" text-anchor="middle">', "Rarity: ",rarity.toString(),'</text>'
       )
     );
   }
@@ -109,21 +110,21 @@ contract ChainBattles is ERC721URIStorage {
 
   // Train the Character to increase its stats
   function train(uint256 _tokenId) public {
-    require(_exists(tokenId), "Token does not exist");
-    require(ownerOf(tokenId) == msg.sender, "You must own this NFT to train it!");
+    require(_exists(_tokenId), "Token does not exist");
+    require(ownerOf(_tokenId) == msg.sender, "You must own this NFT to train it!");
 
     // Increase the level by 1
-    uint256 currentLevel = tokenIdToStats[tokenId].level;
-    tokenIdToStats[tokenId].level = currentLevel + 1;
+    uint256 currentLevel = tokenIdToStats[_tokenId].level;
+    tokenIdToStats[_tokenId].level = currentLevel + 1;
 
-    // Increase the stats by a random number between 1 and 10
-    tokenIdtoStats[tokenId].health = tokenIdToStats[tokenId].health + randomNumber(10);
-    tokenIdToStats[tokenId].attack = tokenIdToStats[tokenId].attack + randomNumber(10);
-    tokenIdToStats[tokenId].defense = tokenIdToStats[tokenId].defense + randomNumber(10);
-    tokenIdToStats[tokenId].speed = tokenIdToStats[tokenId].speed + randomNumber(10);
+    // Increase the stats by a random number
+    tokenIdToStats[_tokenId].health = tokenIdToStats[_tokenId].health + randomNumber(100);
+    tokenIdToStats[_tokenId].attack = tokenIdToStats[_tokenId].attack + randomNumber(10);
+    tokenIdToStats[_tokenId].defense = tokenIdToStats[_tokenId].defense + randomNumber(5);
+    tokenIdToStats[_tokenId].speed = tokenIdToStats[_tokenId].speed + randomNumber(3);
 
     // Sets the new token URI
-    _setTokenURI(tokenId, getTokenURI(tokenId));
+    _setTokenURI(_tokenId, getTokenURI(_tokenId));
   }
 
   function randomNumber(uint256 _number) private view returns (uint256) {
@@ -132,7 +133,8 @@ contract ChainBattles is ERC721URIStorage {
         abi.encodePacked(
           block.timestamp,
           block.difficulty,
-          msg.sender
+          msg.sender,
+          _number
         )
       )
     ) % _number;
@@ -143,6 +145,6 @@ contract ChainBattles is ERC721URIStorage {
   * Emit event when an NFT is minted and trained
   * Create new classes
   * Change SVG attributes dynamically
-  */ 
+  */
 
 }

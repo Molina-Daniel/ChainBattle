@@ -19,6 +19,7 @@ contract ChainBattles is ERC721URIStorage {
 
   // Keep track of the stats for each of the NFTs
   struct Stats {
+    string class;
     uint256 level;
     uint256 health;
     uint256 attack;
@@ -35,11 +36,24 @@ contract ChainBattles is ERC721URIStorage {
 
   // Generates the NFT character SVG image
   function generateCharacter(uint256 _tokenId) public view returns (string memory) {
+    string memory class = tokenIdToStats[_tokenId].class;
+    string memory warriorColor = "#b71717";
+    string memory mageColor = "#1660e0";
+    string memory nftColor;
+
+    if (keccak256(abi.encodePacked(class)) == keccak256("Warrior")) {
+      nftColor = warriorColor;
+    } else if (keccak256(abi.encodePacked(class)) == keccak256("Mage")) {
+      nftColor = mageColor;
+    }
+    console.log("NFT Class: ", class); 
+    console.log("NFT Color: ", nftColor);
+
     bytes memory svg = abi.encodePacked(
       '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350">',
       '<style>.base { fill: white; font-family: serif; font-size: 14px; }</style>',
-      '<rect width="100%" height="100%" fill="#b71717" />',
-      '<text x="50%" y="20%" class="base" dominant-baseline="middle" text-anchor="middle">',"Warrior #",_tokenId.toString(),'</text>',
+      '<rect width="100%" height="100%" fill=','"',nftColor,'"', '/>',
+      '<text x="50%" y="20%" class="base" dominant-baseline="middle" text-anchor="middle">','"',class,'"',' #',_tokenId.toString(),'</text>',
       getStats(_tokenId),
       '</svg>'
     );
@@ -78,7 +92,7 @@ contract ChainBattles is ERC721URIStorage {
     bytes memory dataURI = abi.encodePacked(
       '{',
         '"name": "Chain Battles #', _tokenId.toString(), '",',
-        '"description": "Battles On-Chain",',
+        '"description": "Chain Battles is an NFT Game where you can own a Warrior or Mage character and train them to increase their Stats",',
         '"image": "', generateCharacter(_tokenId), '"',
       '}'
     );
@@ -91,14 +105,36 @@ contract ChainBattles is ERC721URIStorage {
     );
   }
 
-  // Mints the NFT character
-  function mint() public {
+  // Mints the Warrior character
+  function mintWarrior() public {
     _tokenIds.increment();
     uint256 newItemId = _tokenIds.current();
     _safeMint(msg.sender, newItemId);
     console.log("Minted token number: ", newItemId);
 
     // Initialize the stats
+    tokenIdToStats[newItemId].class = "Warrior";
+    tokenIdToStats[newItemId].level = 1;
+    tokenIdToStats[newItemId].health = 100;
+    tokenIdToStats[newItemId].attack = 10;
+    tokenIdToStats[newItemId].defense = 10;
+    tokenIdToStats[newItemId].speed = 10;
+    tokenIdToStats[newItemId].rarity = randomNumber(100);
+
+    // Sets the token URI
+    _setTokenURI(newItemId, getTokenURI(newItemId));
+    console.log("Token URI: ", getTokenURI(newItemId));
+  }
+
+  // Mint the Mage character
+  function mintMage() public {
+    _tokenIds.increment();
+    uint256 newItemId = _tokenIds.current();
+    _safeMint(msg.sender, newItemId);
+    console.log("Minted token number: ", newItemId);
+
+    // Initialize the stats
+    tokenIdToStats[newItemId].class = "Mage";
     tokenIdToStats[newItemId].level = 1;
     tokenIdToStats[newItemId].health = 100;
     tokenIdToStats[newItemId].attack = 10;
@@ -132,6 +168,7 @@ contract ChainBattles is ERC721URIStorage {
     console.log("Token URI: ", getTokenURI(_tokenId));
   }
 
+  // Generates a random number between 0 and _number param
   function randomNumber(uint256 _number) private view returns (uint256) {
     return uint256(
       keccak256(
@@ -144,12 +181,5 @@ contract ChainBattles is ERC721URIStorage {
       )
     ) % _number;
   }
-
-  /**
-  * TODOs:
-  * Emit event when an NFT is minted and trained
-  * Create new classes
-  * Change SVG attributes dynamically
-  */
 
 }

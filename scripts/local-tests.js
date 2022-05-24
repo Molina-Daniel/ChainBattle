@@ -18,15 +18,25 @@ async function main() {
 
   console.log("Contract deployed to:", nftContract.address);
 
-  // Mint a new token
-  console.log("== Minting a new token... ==");
-  await nftContract.connect(owner).mint();
+  // Mint a new Warrior token
+  console.log("== Minting a new Warrior token... ==");
+  await nftContract.connect(owner).mintWarrior();
 
   // Call train function
   console.log("== Calling train function... ==");
   await nftContract.connect(owner).train(1);
   await nftContract.connect(owner).train(1);
   await nftContract.connect(owner).train(1);
+
+  // Mint a new Mage token
+  console.log("== Minting a new Warrior token... ==");
+  await nftContract.connect(acc1).mintMage();
+
+  // Call train function
+  console.log("== Calling train function... ==");
+  await nftContract.connect(acc1).train(2);
+  await nftContract.connect(acc1).train(2);
+  await nftContract.connect(acc1).train(2);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

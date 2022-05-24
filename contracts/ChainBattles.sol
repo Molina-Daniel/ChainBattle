@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-// Version 1 deployed to Mumbai at: 0x77C45ADB236098efB0D4D318F518B2C86E827938
-// Version 2 deployed to Mumbai at: 0x5340d0d6C55B6b3EeFbdB806ca427AEd2743fB82
+// Deployed to Mumbai at: 0xA2d946c1E8317085AAFb21c109dd58D20c802750
 
 pragma solidity ^0.8.0;
 

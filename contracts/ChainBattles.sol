@@ -9,6 +9,7 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/Base64.sol";
+import "hardhat/console.sol";
 
 
 contract ChainBattles is ERC721URIStorage {
@@ -37,7 +38,7 @@ contract ChainBattles is ERC721URIStorage {
     bytes memory svg = abi.encodePacked(
       '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350">',
       '<style>.base { fill: white; font-family: serif; font-size: 14px; }</style>',
-      '<rect width="100%" height="100%" fill="red" />',
+      '<rect width="100%" height="100%" fill="#b71717" />',
       '<text x="50%" y="20%" class="base" dominant-baseline="middle" text-anchor="middle">',"Warrior #",_tokenId.toString(),'</text>',
       getStats(_tokenId),
       '</svg>'
@@ -95,6 +96,7 @@ contract ChainBattles is ERC721URIStorage {
     _tokenIds.increment();
     uint256 newItemId = _tokenIds.current();
     _safeMint(msg.sender, newItemId);
+    console.log("Minted token number: ", newItemId);
 
     // Initialize the stats
     tokenIdToStats[newItemId].level = 1;
@@ -106,6 +108,7 @@ contract ChainBattles is ERC721URIStorage {
 
     // Sets the token URI
     _setTokenURI(newItemId, getTokenURI(newItemId));
+    console.log("Token URI: ", getTokenURI(newItemId));
   }
 
   // Train the Character to increase its stats
@@ -116,6 +119,7 @@ contract ChainBattles is ERC721URIStorage {
     // Increase the level by 1
     uint256 currentLevel = tokenIdToStats[_tokenId].level;
     tokenIdToStats[_tokenId].level = currentLevel + 1;
+    console.log("Level: ", tokenIdToStats[_tokenId].level);
 
     // Increase the stats by a random number
     tokenIdToStats[_tokenId].health = tokenIdToStats[_tokenId].health + randomNumber(100);
@@ -125,6 +129,7 @@ contract ChainBattles is ERC721URIStorage {
 
     // Sets the new token URI
     _setTokenURI(_tokenId, getTokenURI(_tokenId));
+    console.log("Token URI: ", getTokenURI(_tokenId));
   }
 
   function randomNumber(uint256 _number) private view returns (uint256) {
